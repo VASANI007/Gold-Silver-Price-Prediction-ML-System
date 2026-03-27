@@ -11,6 +11,14 @@ An advanced **Machine Learning project** that predicts gold prices and analyzes 
 
 ---
 
+# 🖼️ App Preview
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/VASANI007/Precious-Metal-Price-Prediction-Market-Analytics-Gold-Silver-ML-Dashboard-/main/Precious-Metal-Price-Prediction/images/app.png" width="800"/>
+</p>
+
+---
+
 # 🏆 Tech Stack
 
 ![Python](https://img.shields.io/badge/Python-3670A0?logo=python&logoColor=ffdd54)
@@ -43,6 +51,19 @@ This project provides a **complete ML pipeline + dashboard** for:
 5. Train Linear Regression model  
 6. Predict next day & future prices  
 7. Visualize insights in dashboard  
+
+---
+
+# 📊 Dashboard Insights
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/VASANI007/Precious-Metal-Price-Prediction-Market-Analytics-Gold-Silver-ML-Dashboard-/main/Precious-Metal-Price-Prediction/images/app1.png" width="400"/>
+<img src="https://raw.githubusercontent.com/VASANI007/Precious-Metal-Price-Prediction-Market-Analytics-Gold-Silver-ML-Dashboard-/main/Precious-Metal-Price-Prediction/images/app2.png" width="400"/>
+</p>
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/VASANI007/Precious-Metal-Price-Prediction-Market-Analytics-Gold-Silver-ML-Dashboard-/main/Precious-Metal-Price-Prediction/images/app3.png" width="400"/>
+</p>
 
 ---
 
