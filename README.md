@@ -85,6 +85,83 @@ PRECIOUS-METAL-PRICE-PREDICTION/
 
 ---
 
+# 📄 File Explanation (Important Section 🚀)
+
+### 🔹 app/app.py
+- Streamlit dashboard UI  
+- Shows charts, predictions, and analytics  
+- Handles user interaction  
+
+---
+
+### 🔹 data/raw/
+- Contains original dataset  
+- `gold_raw.csv` → Gold price data  
+- `silver_raw.csv` → Silver price data  
+
+---
+
+### 🔹 data/processed/final_data.csv
+- Final cleaned dataset  
+- Includes INR conversion + engineered features  
+- Used for model training & dashboard  
+
+---
+
+### 🔹 models/model.pkl
+- Trained machine learning model  
+- Used for prediction (no need to retrain every time)  
+
+---
+
+### 🔹 notebooks/analysis.ipynb
+- Exploratory Data Analysis (EDA)  
+- Visualization and experimentation  
+- Model understanding  
+
+---
+
+### 🔹 src/data/fetch_data.py
+- Fetches real-time data using Yahoo Finance API  
+- Updates dataset automatically  
+
+---
+
+### 🔹 src/processing/preprocess.py
+- Cleans and merges datasets  
+- Converts USD → INR  
+- Creates new features  
+- Generates final dataset  
+
+---
+
+### 🔹 src/models/train_model.py
+- Trains ML model (Linear Regression)  
+- Uses processed dataset  
+- Saves model as `.pkl` file  
+
+---
+
+### 🔹 src/models/predict.py
+- Loads trained model  
+- Predicts future gold prices  
+- Used in dashboard  
+
+---
+
+### 🔹 main.py
+- Runs full pipeline automatically  
+- Data → Processing → Training → Prediction  
+- One command execution  
+
+---
+
+### 🔹 requirements.txt
+- List of all dependencies  
+- Used for environment setup  
+
+---
+
 # ⚙️ Installation
 
 ```bash
@@ -132,12 +209,6 @@ streamlit run app/app.py
 - Cloud deployment  
 - Real-time streaming  
 - Crypto integration  
-
----
-
-# 👨‍💻 Author
-
-Daksh Vasani
 
 ---
 
