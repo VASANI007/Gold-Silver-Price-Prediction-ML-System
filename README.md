@@ -92,8 +92,8 @@ PRECIOUS-METAL-PRICE-PREDICTION/
 ### 🔹 Dashboard (app.py)
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app.png" width="400"/>
-<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app1.png" width="400"/>
+<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app3.png" width="400"/>
+<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app4.png" width="400"/>
 </p>
 
 ---
