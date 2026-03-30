@@ -125,12 +125,6 @@ An advanced **Machine Learning + Data Analytics project** that predicts gold pri
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app.png" width="45%"/>
-<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app1.png" width="45%"/>
-</p>
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app2.png" width="45%"/>
-<img src="https://raw.githubusercontent.com/VASANI007/Gold-Silver-Price-Prediction-ML-System/main/Precious-Metal-Price-Prediction/images/app3.png" width="45%"/>
 </p>
 
 ---
