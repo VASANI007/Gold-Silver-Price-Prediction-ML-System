@@ -1,4 +1,5 @@
 import os
+from random import random
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -105,6 +106,7 @@ def load_data():
 # LOAD MODEL
 try:
     model = joblib.load("models/model.pkl")
+    usd_model = joblib.load("models/usd_model.pkl")
 except Exception as e:
     st.error(f"Model loading failed: {e}")
     st.stop()
@@ -164,7 +166,19 @@ def format_change(val):
     else:
         return "<span style='color:gray;'>0</span>"
 
+def predict_usd_next(latest, prev, usd):
 
+    lag1 = latest
+    lag2 = prev
+    lag3 = usd['Close'].iloc[-3]
+
+    ma3 = usd['Close'].tail(3).mean()
+    ma7 = usd['Close'].tail(7).mean()
+
+    X = pd.DataFrame([[lag1, lag2, lag3, ma3, ma7]],
+                        columns=['Lag_1','Lag_2','Lag_3','MA_3','MA_7'])
+
+    return usd_model.predict(X)[0]
 
 # ADD THIS GLOBAL FUNCTION (TOP ME ADD KARO)
 def create_input(lag1, lag2, lag3, ma7, ma30, day_of_week):
@@ -191,7 +205,6 @@ def create_input(lag1, lag2, lag3, ma7, ma30, day_of_week):
             input_data[col] = 0
 
     return input_data[model.feature_names_in_]
-
 
 #  PREPARE VALUES
 g24_html = format_change(g24_change)
@@ -753,7 +766,7 @@ with tab4:
                 ma30 = usd['Close'].rolling(30).mean().iloc[-1] if len(usd) >= 30 else lag1
                 day_of_week = selected_datetime.dayofweek
                 input_data = create_input(lag1, lag2, lag3, ma7, ma30, day_of_week)
-                prediction = latest + (latest - prev) * 0.3
+                prediction = predict_usd_next(latest, prev, usd)
 
                 pred_change = prediction - latest
 
@@ -802,35 +815,22 @@ with tab4:
 
         #  7 DAYS PREDICTION
         if model is not None:
-            future_days = 7
+            #  7 DAYS PREDICTION (FINAL FIXED)
             future_preds = []
             future_dates = []
+            last_val = latest
+            prev_val = prev
 
-            last_val = float(latest)
-            prev_val = float(prev)
-            day_of_week = selected_datetime.dayofweek
-            for i in range(future_days):
-                # Create features SAME as training
-                lag1 = last_val
-                lag2 = prev_val
-                temp_prices = usd['Close'].tolist()
-                
-                lag3 = temp_prices[-3] if len(temp_prices) >= 3 else lag2
-
-                ma7 = usd['Close'].rolling(7).mean().iloc[-1] if len(usd) >= 7 else lag1
-                ma30 = usd['Close'].rolling(30).mean().iloc[-1] if len(usd) >= 30 else lag1
-                input_data = create_input(lag1, lag2, lag3, ma7, ma30, day_of_week)
-                next_pred = last_val
-                future_preds.append(next_pred)
+            for i in range(7):
+                next_pred = predict_usd_next(last_val, prev_val, usd)
+                # smoothing (VERY IMPORTANT)
+                next_pred = max(min(next_pred, last_val + 0.12), last_val - 0.12)
+                future_preds.append(round(next_pred, 2))
                 future_dates.append(selected_datetime + timedelta(days=i+1))
-
                 prev_val = last_val
                 last_val = next_pred
-
             styled_subheader("7 Day USD Prediction")
-
             pred_rows = []
-
             for i in range(len(future_preds)):
                 if i == 0:
                     prev_val = latest
