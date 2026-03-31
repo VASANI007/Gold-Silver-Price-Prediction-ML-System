@@ -2,6 +2,7 @@ import traceback
 from src.data.fetch_data import fetch_all
 from src.processing.preprocess import preprocess
 from src.models.train_model import train_model
+from src.models.train_usd_model import train_usd_model
 from src.models.predict import predict_next, predict_future
 
 
@@ -22,6 +23,7 @@ def run_pipeline():
         # STEP 3: Train Model
         print(" Training Model...")
         train_model()
+        train_usd_model()
         print(" Model Training Complete\n")
 
         # STEP 4: Predictions
