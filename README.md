@@ -68,6 +68,7 @@ PRECIOUS-METAL-PRICE-PREDICTION/
 │ │
 │ ├── models/
 │ │ ├── train_model.py
+| | ├── train_usd_model.py
 │ │ └── predict.py
 │
 ├── main.py # Full pipeline runner
