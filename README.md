@@ -61,15 +61,15 @@ PRECIOUS-METAL-PRICE-PREDICTION/
 │
 ├── src/
 │ ├── data/
-│ │ └── fetch_data.py
-│ │
+│ └── fetch_data.py
+│ 
 │ ├── processing/
 │ │ └── preprocess.py
 │ │
-│ ├── models/
-│ │ ├── train_model.py
-| | ├── train_usd_model.py
-│ │ └── predict.py
+│ └── models/
+│   ├── train_model.py
+|   ├── train_usd_model.py
+│   └── predict.py
 │
 ├── main.py # Full pipeline runner
 ├── requirements.txt
