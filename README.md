@@ -34,6 +34,17 @@ This project provides a **complete ML pipeline + dashboard** for:
 
 ---
 
+# 📊 Model Performance
+
+| Metric   | 🪙 Gold | 🔘 Silver | 💱 USD |
+|----------|--------|----------|--------|
+| MAE      | ₹31.80 | ₹0.82    | ₹0.14  |
+| RMSE     | ₹54.78 | ₹1.81    | ₹0.23  |
+| R² Score | 0.9826 | 0.9663   | 0.9831 |
+
+> 🎯 **High accuracy achieved across all models with stable predictions**
+
+---
 
 # 📂 Project Structure
 
@@ -41,38 +52,46 @@ This project provides a **complete ML pipeline + dashboard** for:
 PRECIOUS-METAL-PRICE-PREDICTION/
 
 ├── app/
-│ └── app.py # Streamlit Dashboard
+│   └── app.py                     # Streamlit Dashboard
 │
 ├── data/
-│ ├── raw/
-│ │ ├── gold_raw.csv
-│ │ └── silver_raw.csv
-│ │
-│ └── processed/
-│ └── final_data.csv
+│   ├── raw/
+│   │   ├── gold_raw.csv
+│   │   └── silver_raw.csv
+│   │
+│   └── processed/
+│       └── final_data.csv
 │
-├── images/
+├── images/                       # App screenshots (optional but recommended)
 │
 ├── models/
-│ └── model.pkl
+│   ├── model.pkl                 
+│   ├── silver_model.pkl          
+│   ├── usd_model.pkl            
+│   │
+│   ├── gold_metrics.pkl          
+│   ├── silver_metrics.pkl        
+│   └── usd_metrics.pkl           
 │
 ├── notebooks/
-│ └── analysis.ipynb
+│   └── analysis.ipynb
 │
 ├── src/
-│ ├── data/
-│ └── fetch_data.py
-│ 
-│ ├── processing/
-│ │ └── preprocess.py
-│ │
-│ └── models/
-│   ├── train_model.py
-|   ├── train_usd_model.py
-│   └── predict.py
+│   ├── data/
+│   │   └── fetch_data.py
+│   │
+│   ├── processing/
+│   │   └── preprocess.py
+│   │
+│   └── models/
+│       ├── train_gold_model.py   
+│       ├── train_silver_model.py  
+│       ├── train_usd_model.py     
+│       └── predict.py
 │
-├── main.py # Full pipeline runner
+├── main.py                        # Full pipeline runner
 ├── requirements.txt
+├── README.md                      # IMPORTANT
 ```
 
 ---
@@ -91,18 +110,6 @@ An advanced **Machine Learning + Data Analytics project** that predicts gold pri
 - 🔮 7-day future forecasting
 - 📊 Interactive Streamlit dashboard
 - ⚡ Automated daily updates
-
----
-
-# 📊 Model Performance
-
-| Metric | Value |
-|-------|------|
-| MAE | ₹31.80 |
-| RMSE | ₹54.78 |
-| R² Score | 0.9826 |
-
-> 🎯 **~98% accuracy achieved** with highly stable predictions
 
 ---
 
@@ -173,9 +180,16 @@ Data Fetch → Preprocessing → Feature Engineering → Model Training → Pred
 
 ---
 
-### 🔹 models/model.pkl
-- Trained machine learning model  
-- Used for prediction (no need to retrain every time)  
+### 🔹 models/
+- Stores trained models and evaluation metrics  
+
+- `model.pkl` → Gold model  
+- `silver_model.pkl` → Silver model  
+- `usd_model.pkl` → USD model  
+
+- `gold_metrics.pkl` → Gold model performance (MAE, RMSE, R²)  
+- `silver_metrics.pkl` → Silver model performance  
+- `usd_metrics.pkl` → USD model performance  
 
 ---
 
@@ -201,16 +215,32 @@ Data Fetch → Preprocessing → Feature Engineering → Model Training → Pred
 ---
 
 ### 🔹 src/models/train_model.py
-- Trains ML model (Linear Regression)  
+- Trains Gold prediction model  
 - Uses processed dataset  
-- Saves model as `.pkl` file  
+- Saves model as `model.pkl`  
+
+---
+
+### 🔹 src/models/train_silver_model.py
+- Trains Silver prediction model  
+- Uses lag features, moving averages & gold influence  
+- Saves model as `silver_model.pkl`  
+- Also saves performance metrics  
+
+---
+
+### 🔹 src/models/train_usd_model.py
+- Trains USD-INR prediction model  
+- Uses lag & moving average features  
+- Saves model as `usd_model.pkl`  
+- Stores evaluation metrics  
 
 ---
 
 ### 🔹 src/models/predict.py
-- Loads trained model  
-- Predicts future gold prices  
-- Used in dashboard  
+- Loads trained models  
+- Performs predictions for Gold, Silver, and USD  
+- Integrated with dashboard  
 
 ---
 
