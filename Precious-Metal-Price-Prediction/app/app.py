@@ -35,6 +35,56 @@ Advanced Analytics for Gold, Silver & Currency
 </p>
 """, unsafe_allow_html=True)
 
+# ADVANCED LOADING SCREEN
+loading_placeholder = st.empty()
+
+loading_placeholder.markdown("""
+<style>
+.loader-container {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:60vh;
+    text-align:center;
+}
+
+.loader {
+    border: 6px solid #1a1a1a;
+    border-top: 6px solid #4FC3F7;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    animation: spin 1s linear infinite;
+    margin-bottom:20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size:20px;
+    color:white;
+    font-weight:500;
+    text-shadow: 0 0 10px #4FC3F7;
+}
+
+.loading-sub {
+    font-size:14px;
+    color:#888;
+    margin-top:5px;
+}
+</style>
+
+<div class="loader-container">
+    <div class="loader"></div>
+    <div class="loading-text">Loading Market Intelligence...</div>
+    <div class="loading-sub">Fetching Gold, Silver & Currency Data</div>
+</div>
+""", unsafe_allow_html=True)
+
 #  STYLES TABLE
 st.markdown("""
 <style>
@@ -75,11 +125,12 @@ def styled_subheader(text):
     """, unsafe_allow_html=True)
 
 #  AUTO REFRESH
-try:
-    fetch_all()
-    preprocess()
-except Exception as e:
-    st.warning(f"Data update skipped: {e}")
+with st.spinner(" Fetching market data..."):
+    try:
+        fetch_all()
+        preprocess()
+    except Exception as e:
+        st.warning(f"Data update skipped: {e}")
 
 
 #  LOAD DATA
@@ -110,7 +161,9 @@ except Exception as e:
     st.error(f"Model loading failed: {e}")
     st.stop()
 df = load_data()
-st.caption(f"Latest available data: {df['Date'].max().date()}")
+loading_placeholder.empty()
+if not df.empty:
+    st.caption(f"Latest available data: {df['Date'].max().date()}")
 if df.empty or len(df) < 2:
     st.error("Not enough data available")
     st.stop()
@@ -141,14 +194,13 @@ g24_change = latest['Gold_24K_1g'] - previous['Gold_24K_1g']
 g22_change = latest['Gold_22K_1g'] - previous['Gold_22K_1g']
 silver_change = latest['Silver_1g'] - previous['Silver_1g']
 try:
-    usd_live = yf.download("USDINR=X", period="2d")
+    usd_live = usd.tail(2)
     usd_live = usd_live.dropna()
     if len(usd_live) < 2:
         raise ValueError("Not enough live data")
-    usd_price = float(usd_live['Close'].iloc[-1])
-    usd_prev = float(usd_live['Close'].iloc[-2])
-except:
-    # fallback to full dataset
+    usd_price = float(usd_live['Close'].iloc[-1].item())
+    usd_prev = float(usd_live['Close'].iloc[-2].item())
+except Exception as e:
     usd_price = float(usd['Close'].iloc[-1])
     usd_prev = float(usd['Close'].iloc[-2])
 
@@ -181,7 +233,8 @@ def predict_usd_next(latest, prev, usd):
 def create_input(lag1, lag2, lag3, ma7, ma30, day_of_week):
 
     usd_change = (lag1 - lag2) / lag2 if lag2 != 0 else 0
-    silver_change = (df['Silver_1g'].iloc[-1] - df['Silver_1g'].iloc[-2]) / df['Silver_1g'].iloc[-2]
+    den = df['Silver_1g'].iloc[-2]
+    silver_change = ((df['Silver_1g'].iloc[-1] - den) / den) if den != 0 else 0
 
     input_data = pd.DataFrame([{
         "Lag_1": lag1,
@@ -259,9 +312,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Model Performance"
 ])
 
-def create_silver_input(lag1, lag2, lag3, ma7, ma30):
+def create_silver_input(df, lag1, lag2, lag3, ma7, ma30):
 
-    # calculate extra features
+    # safe calculations
     return_val = (lag1 - lag2) / lag2 if lag2 != 0 else 0
     momentum = lag1 - lag2
 
@@ -353,7 +406,7 @@ def show_section(metal, column_name):
             gold_pred = model.predict(input_data)[0]
 
             if metal == "Silver":
-                X = create_silver_input(lag1, lag2, lag3, ma7, ma30)
+                X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
                 next_pred = silver_model.predict(X)[0]
                 next_pred = (next_pred * 0.7) + (lag1 * 0.3)
                 mean_price = df[column_name].tail(7).mean()
@@ -398,7 +451,7 @@ def show_section(metal, column_name):
                 gold_pred = model.predict(input_data)[0]
 
                 if metal == "Silver":
-                    X = create_silver_input(lag1, lag2, lag3, ma7, ma30)
+                    X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
                     next_pred = silver_model.predict(X)[0]
                     next_pred = (next_pred * 0.7) + (lag1 * 0.3)
                     mean_price = df[column_name].tail(7).mean()
@@ -475,7 +528,7 @@ def show_section(metal, column_name):
             gold_pred = model.predict(input_data)[0]
 
             if metal == "Silver":
-                X = create_silver_input(lag1, lag2, lag3, ma7, ma30)
+                X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
                 prediction = silver_model.predict(X)[0]
             elif metal == "Gold_22K":
                 prediction = gold_pred * (22/24)
@@ -518,7 +571,7 @@ def show_section(metal, column_name):
         gold_pred = model.predict(input_data)[0]
 
         if metal == "Silver":
-            X = create_silver_input(lag1, lag2, lag3, ma7, ma30)
+            X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
             next_pred = silver_model.predict(X)[0]
             next_pred = (next_pred * 0.7) + (lag1 * 0.3)
             mean_price = df[column_name].tail(7).mean()
@@ -635,6 +688,7 @@ def show_section(metal, column_name):
         dff = df[df['Date'] <= selected_datetime]
 
     if metal == "Gold_22K":
+        dff = dff.copy()
         dff[column_name] = dff["Gold_24K_1g"] * (22/24)
     fig = go.Figure()
 
@@ -726,10 +780,11 @@ with tab4:
 
         filtered_usd = usd[usd['Date'].dt.date == selected_date]
         max_date = usd['Date'].max().date()
-
-        #  FUTURE DATE FIX
-        if filtered_usd.empty and selected_date > max_date:
-            st.warning("Future date selected — showing prediction")
+        today = pd.to_datetime("today").normalize()
+        selected_datetime = pd.to_datetime(selected_date)
+        # FUTURE DATE
+        if selected_datetime > today:
+            st.warning("Future Prediction Mode")
 
             last_row = usd.iloc[-1]
             prev_row = usd.iloc[-2]
@@ -737,44 +792,46 @@ with tab4:
             last_val = float(last_row['Close'])
             prev_val = float(prev_row['Close'])
 
-            days_ahead = (selected_date - max_date).days
+            days_ahead = (selected_datetime - usd['Date'].max()).days
 
             temp_prev = prev_val
             temp_last = last_val
-            day_of_week = pd.to_datetime(selected_date).dayofweek
+
             for _ in range(days_ahead):
-                lag1 = temp_last
-                lag2 = temp_prev
-                temp_prices = usd['Close'].tolist()
-
-                lag3 = temp_prices[-3] if len(temp_prices) >= 3 else lag2
-
-                ma7 = usd['Close'].rolling(7).mean().iloc[-1] if len(usd) >= 7 else lag1
-                ma30 = usd['Close'].rolling(30).mean().iloc[-1] if len(usd) >= 30 else lag1
-                input_data = create_input(lag1, lag2, lag3, ma7, ma30, day_of_week)
-                next_pred = last_val
-
+                next_pred = temp_last  # (your logic)
                 temp_prev = temp_last
                 temp_last = next_pred
 
             latest = temp_last
             prev = temp_prev
-            selected_datetime = pd.to_datetime(selected_date)
 
-        #  NORMAL DATE
+
+# TODAY (LIVE / LATEST)
+        elif selected_datetime == today:
+
+            last_row = usd.iloc[-1]
+            prev_row = usd.iloc[-2]
+
+            latest = float(last_row['Close'])
+            prev = float(prev_row['Close'])
+
+
+# PAST DATE
         elif not filtered_usd.empty:
+            st.info("Historical Data")
+
             selected_row = filtered_usd.iloc[0]
             latest = float(selected_row['Close'])
 
-            prev_df = usd[usd['Date'] < pd.to_datetime(selected_date)]
+            prev_df = usd[usd['Date'] < selected_datetime]
 
             if not prev_df.empty:
                 prev = float(prev_df.iloc[-1]['Close'])
             else:
                 prev = latest
 
-            selected_datetime = pd.to_datetime(selected_date)
 
+        # INVALID
         else:
             st.error("Data Not Found for selected date")
             st.stop()
