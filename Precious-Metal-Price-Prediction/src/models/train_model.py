@@ -74,7 +74,7 @@ def train_model():
     ]
 
     y = df['Target']
-    model = Ridge(alpha=1.0)
+    model = Ridge(alpha=0.5)
 
     # CROSS VALIDATION
     
