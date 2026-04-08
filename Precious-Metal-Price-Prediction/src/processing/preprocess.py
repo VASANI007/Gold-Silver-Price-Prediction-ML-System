@@ -108,8 +108,10 @@ def preprocess():
     
     # PRICE CONVERSION
     
-    df['Gold_24K_1g'] = (df['Gold_USD'] / OUNCE_TO_GRAM) * df['USD_INR']
-    df['Silver_1g'] = (df['Silver_USD'] / OUNCE_TO_GRAM) * df['USD_INR']
+    INDIA_FACTOR = 1.08   # 6–10% adjust (tune kar sakte ho)
+
+    df['Gold_24K_1g'] = ((df['Gold_USD'] / OUNCE_TO_GRAM) * df['USD_INR']) * INDIA_FACTOR
+    df['Silver_1g'] = ((df['Silver_USD'] / OUNCE_TO_GRAM) * df['USD_INR']) * INDIA_FACTOR
 
     # RETURNS
     df['Gold_Return'] = df['Gold_24K_1g'].pct_change()
