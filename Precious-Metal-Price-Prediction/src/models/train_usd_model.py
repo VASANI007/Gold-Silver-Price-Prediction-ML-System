@@ -110,8 +110,6 @@ def train_usd_model():
 
     return model
 
-
-
 # MAIN
 
 if __name__ == "__main__":
