@@ -405,7 +405,7 @@ def show_section(metal, column_name):
             if metal == "Silver":
                 X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
                 next_pred = silver_model.predict(X)[0]
-                next_pred = (next_pred * 0.7) + (lag1 * 0.3)
+                next_pred = (next_pred * 0.9) + (lag1 * 0.1)
                 mean_price = df[column_name].tail(7).mean()
                 next_pred = (next_pred * 0.6 + lag1 * 0.2 + mean_price * 0.2)
             elif metal == "Gold_22K":
@@ -450,7 +450,7 @@ def show_section(metal, column_name):
                 if metal == "Silver":
                     X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
                     next_pred = silver_model.predict(X)[0]
-                    next_pred = (next_pred * 0.7) + (lag1 * 0.3)
+                    next_pred = (next_pred * 0.9) + (lag1 * 0.1)
                     mean_price = df[column_name].tail(7).mean()
                     next_pred = (next_pred * 0.6 + lag1 * 0.2 + mean_price * 0.2)
                 elif metal == "Gold_22K":
@@ -570,7 +570,7 @@ def show_section(metal, column_name):
         if metal == "Silver":
             X = create_silver_input(df, lag1, lag2, lag3, ma7, ma30)
             next_pred = silver_model.predict(X)[0]
-            next_pred = (next_pred * 0.7) + (lag1 * 0.3)
+            next_pred = (next_pred * 0.9) + (lag1 * 0.1)
             mean_price = df[column_name].tail(7).mean()
             next_pred = (next_pred * 0.6 + lag1 * 0.2 + mean_price * 0.2)
         elif metal == "Gold_22K":
