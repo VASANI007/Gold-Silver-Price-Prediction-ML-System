@@ -54,7 +54,7 @@ def train_silver_model():
     y = df['Target']
 
     #  MODEL (BEST FOR THIS CASE)
-    model = Ridge(alpha=0.05)
+    model = Ridge(alpha=0.1)
 
     # CROSS VALIDATION
     tscv = TimeSeriesSplit(n_splits=5)
