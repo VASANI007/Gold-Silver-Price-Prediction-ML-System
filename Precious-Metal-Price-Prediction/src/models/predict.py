@@ -143,10 +143,48 @@ def predict_next():
 
 
 def predict_future(days=7):
+
+    gold_model, silver_model, usd_model = load_models()
+    df = load_data()
+
     preds = []
+
+    temp_df = df.copy()
+
     for _ in range(days):
-        gold, _, _ = predict_all()
-        preds.append(gold)
+
+        # Prepare features again (IMPORTANT)
+        temp_df = prepare_gold_features(temp_df)
+
+        last = temp_df.iloc[-1]
+
+        X = pd.DataFrame([[ 
+            last['Lag_1'], last['Lag_2'], last['Lag_3'],
+            last['MA_7'], last['MA_30'],
+            last['USD_INR'], last['USD_Change'],
+            last['Silver_1g'], last['Silver_Change'],
+            last['Gold_22K_1g'],
+            last['DayOfWeek']
+        ]], columns=[
+            'Lag_1','Lag_2','Lag_3',
+            'MA_7','MA_30',
+            'USD_INR','USD_Change',
+            'Silver_1g','Silver_Change',
+            'Gold_22K_1g','DayOfWeek'
+        ])
+
+        next_pred = gold_model.predict(X)[0]
+        next_pred = next_pred * np.random.uniform(0.999, 1.001)
+
+        preds.append(round(next_pred, 2))
+
+        # 🔥 IMPORTANT: append prediction back
+        new_row = temp_df.iloc[-1].copy()
+        new_row['Gold_24K_1g'] = next_pred
+        new_row['Date'] = new_row['Date'] + pd.Timedelta(days=1)
+
+        temp_df = pd.concat([temp_df, pd.DataFrame([new_row])], ignore_index=True)
+
     return preds
 # MAIN
 if __name__ == "__main__":
